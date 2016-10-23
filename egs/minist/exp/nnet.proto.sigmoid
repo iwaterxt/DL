@@ -1,0 +1,8 @@
+<NnetProto>
+<AffineTransform> <InputDim> 784 <OutputDim> 260 <BiasMean> -2.0 <BiasRange> 4.0 <ParamStddev> 0.1
+<ActiveFunction> <InputDim> 260 <OutputDim> 260 <FunctionSign> 1
+<AffineTransform> <InputDim> 260 <OutputDim> 260 <BiasMean> -2.0 <BiasRange> 4.0 <ParamStddev> 0.1
+<ActiveFunction> <InputDim> 260 <OutputDim> 260 <FunctionSign> 1
+<AffineTransform> <InputDim> 260 <OutputDim> 10 <BiasMean> -2.0 <BiasRange> 4.0 <ParamStddev> 0.1
+<SoftMax> <InputDim> 10 <OutputDim> 10
+</NnetProto>
