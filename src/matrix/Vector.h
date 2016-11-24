@@ -50,7 +50,7 @@ public:
 
 	void SubVec(Vector<Real> &A);
 
-	void AddVec(Vector<Real> &A);
+	void AddVec(Vector<Real> &A, Real alpha);
 
 	void SumRowMat( Matrix<Real> &Mat, MatrixTransposeType TransA, Real alpha);
 

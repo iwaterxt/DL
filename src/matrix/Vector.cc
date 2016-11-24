@@ -103,11 +103,11 @@ void Vector<Real>::SubVec(Vector<Real> &A){
 }
 
 template<typename Real>
-void Vector<Real>::AddVec(Vector<Real> &A){
+void Vector<Real>::AddVec(Vector<Real> &A, Real alpha){
 	assert(A.Dim() == dim_);
 	Real* data_a = A.Data();
 	for(int32 i = 0; i < dim_; i++)
-		data_[i] += data_a[i];
+		data_[i] += alpha * data_a[i];
 }
 
 template<typename Real>
@@ -125,7 +125,7 @@ void Vector<Real>::SumRowMat( Matrix<Real> &A, MatrixTransposeType TransA, Real 
 			data_sum[i] += data_a[i*Cols+j];  
 		}
 
-	this->AddVec(S);
+	this->AddVec(S,1.0);
 }
 
 template<typename Real>

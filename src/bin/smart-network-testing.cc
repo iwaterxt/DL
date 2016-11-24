@@ -68,13 +68,14 @@ int main(int argc,  char* argv[])
 
 //=========2015-9-19================
     int32 minibatch_size = 0 , test_number = 0 , image_size = 0 ;
-    bool apply_norm = 0 ;
+    bool apply_norm = 0 , is_train = 0;
     std::string TestFile , test_label , mlp_best ;
     OptionParse Parser;
     Parser.Register_int(argc, argv, "minibatch-size", minibatch_size, "the batch-size of training");
     Parser.Register_int(argc, argv, "test-number", test_number, "the number of test data");
     Parser.Register_int(argc, argv, "image-size", image_size, "the size of image");
     Parser.Register_bool(argc, argv, "apply-norm", apply_norm, "apply normalization");
+    Parser.Register_bool(argc, argv, "is-train", is_train, "is training stage");
     Parser.Register_string(argc, argv, "TestFile", TestFile, "the path of testing dataset");
     Parser.Register_string(argc, argv, "test-label", test_label, "the path of testing dataset");
     Parser.Register_string(argc, argv, "mlp-best", mlp_best, "the path of mlp-best model");
@@ -90,6 +91,7 @@ int main(int argc,  char* argv[])
     opt.image_size = image_size ;
     opt.test_number = test_number ;
     opt.apply_norm = apply_norm ;
+    opt.is_train = is_train ;
     
 
     //fill data

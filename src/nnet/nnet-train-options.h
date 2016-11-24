@@ -34,10 +34,11 @@ struct NnetTrainOptions
   int32 test_number ;
   int32 class_number ;
   bool apply_norm ;
+  bool is_train ;
   
 
   NnetTrainOptions(): learn_rate(0.008),bias_learn_rate(0.0008),momentum(0.0),l2_penalty(0.0),l1_penalty(0.0), minibatch_size(0),
-  image_size(0), tr_number(0), cv_number(0), test_number(0), class_number(0), apply_norm(0){}
+  image_size(0), tr_number(0), cv_number(0), test_number(0), class_number(0), apply_norm(0), is_train(0){}
 
   
 };

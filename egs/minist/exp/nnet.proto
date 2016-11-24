@@ -1,10 +1,18 @@
 <NnetProto>
-<AffineTransform> <InputDim> 784 <OutputDim> 512 <BiasMean> 0.01 <BiasRange> 0.01 <ParamStddev> 0.01
-<ReLU> <InputDim> 512 <OutputDim> 512 
-<AffineTransform> <InputDim> 512 <OutputDim> 512 <BiasMean> 0.01 <BiasRange> 0.01 <ParamStddev> 0.01
-<ReLU> <InputDim> 512 <OutputDim> 512 
-<AffineTransform> <InputDim> 512 <OutputDim> 512 <BiasMean> 0.01 <BiasRange> 0.01 <ParamStddev> 0.01
-<ReLU> <InputDim> 512 <OutputDim> 512 
-<AffineTransform> <InputDim> 512 <OutputDim> 10 <BiasMean> 0.00 <BiasRange> 0.0 <ParamStddev> 0.01
-<Softmax> <InputDim> 10 <OutputDim> 10
+<ConvnetComponentCudnn> <InputDim> 784 <OutputDim> 50176 <BiasMean> 0 <BiasRange> 0.01 <ParamStddev> 0.1 <FmapXLen> 28 <FmapYLen> 28  <FiltXLen> 3 <FiltYLen> 3 <FiltXStep> 1 <FiltYStep> 1 <FmapXPad> 1 <FmapYPad> 1  <LearnRateCoef> 1.0 <BiasLearnRateCoef> 1.0
+<BatchNormCudnn> <InputDim> 50176 <OutputDim> 50176 <NumFilters> 64 <Gamma> 1.0 <Beta> 0.0 <FmapXLen> 28 <FmapYLen> 28
+<ReLU> <InputDim> 50176 <OutputDim> 50176
+<CudnnMaxPooling2DComponent> <InputDim> 50176 <OutputDim> 12544 <FmapXLen> 28 <FmapYLen> 28 <PoolXLen> 2 <PoolYLen> 2 <PoolXStep> 2 <PoolYStep> 2 <PoolXPad> 0 <PoolYPad> 0
+
+<ReLU> <InputDim> 12544 <OutputDim> 12544 
+<AffineTransform> <InputDim> 12544 <OutputDim> 2048 <BiasMean> 0.01 <BiasRange> 0.01 <ParamStddev> 0.01
+<ReLU> <InputDim> 2048 <OutputDim> 2048
+<AffineTransform> <InputDim> 2048 <OutputDim> 2048 <BiasMean> 0.01 <BiasRange> 0.01 <ParamStddev> 0.01
+<ReLU> <InputDim> 2048 <OutputDim> 2048
+<AffineTransform> <InputDim> 2048 <OutputDim> 2048 <BiasMean> 0.01 <BiasRange> 0.01 <ParamStddev> 0.01
+<ReLU> <InputDim> 2048 <OutputDim> 2048
+<AffineTransform> <InputDim> 2048 <OutputDim> 2048 <BiasMean> 0.01 <BiasRange> 0.01 <ParamStddev> 0.01
+<ReLU> <InputDim> 2048 <OutputDim> 2048
+<AffineTransform> <InputDim> 2048 <OutputDim> 10 <BiasMean> 0.0 <BiasRange> 0.0 <ParamStddev> 0.01
+<SoftMax> <InputDim> 10 <OutputDim> 10
 </NnetProto>

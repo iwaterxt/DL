@@ -12,13 +12,15 @@ l2_penalty=0
 # data processing
 minibatch_size=250
 
-start_halving_inc=4
+start_halving_inc=5
 
 end_halving_inc=0.1
 
 halving_factor=0.5
 
 apply_norm=1
+
+is_train=1
 
 cv_number=10000
 
@@ -85,6 +87,7 @@ $train_tool --cross-validate=1 \
  --cv-number=$cv_number \
  --class-number=$class_number \
  --apply-norm=$apply_norm \
+ --is-train=$is_train \
  --image-size=$image_size \
  --mlp-best=$mlp_best \
  > $dir/log/iter00.initial.log || exit 1;
@@ -110,6 +113,7 @@ for iter in $(seq  $max_iters); do
    --l1-penalty=$l1_penalty \
    --l2-penalty=$l2_penalty \
    --apply-norm=$apply_norm \
+   --is-train=$is_train \
    --minibatch-size=$minibatch_size \
    --momentum=$momentum \
    --TrainFile=$TrainFile \
@@ -133,6 +137,7 @@ for iter in $(seq  $max_iters); do
     --cv-number=$cv_number \
     --class-number=$class_number \
     --apply-norm=$apply_norm \
+    --is-train=$is_train \
     --image-size=$image_size \
     --mlp-best=$mlp_next \
    >$dir/log/iter${iter}.cv.log || exit 1;

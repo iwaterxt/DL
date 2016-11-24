@@ -6,19 +6,21 @@ Experiment Seting:
 	2: Training criterion : Cross-Entropy
 	3: Network configure :
 "
-apply_norm=1
+apply_norm=0
 
-batch_size=25
+batch_size=250
 
 class_number=10
 
-learn_rate=0.01
+learn_rate=0.001
 
 momentum=0.95
 
 bias_learn_rate=0.001
 
-l2_penalty=0.0001
+l2_penalty=0.00001
+
+is_train=1
 
 dir=/home/tao/Works/Water
 
@@ -28,7 +30,7 @@ TestFile=$dir/Data/minist/test_set
 
 CrossValiFile=$dir/Data/minist/dev_set
 
-nnet_proto_file=$dir/egs/minist/exp/nnet.proto
+nnet_proto_file=$dir/egs/minist/exp/nnet.proto.sigmoid
 
 TrainLabel=$dir/Data/minist/train_label
 
@@ -46,6 +48,7 @@ echo ================================================
 	--bias-learn-rate $bias_learn_rate \
 	--apply-norm $apply_norm \
 	--momentum $momentum \
+	--is-train $is_train \
 	--class-number $class_number \
 	--l2-penalty $l2_penalty \
 	$nnet_proto_file $TrainFile $TrainLabel $CrossValiFile $CrossValLabel $logdir || exit 1;

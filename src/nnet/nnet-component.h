@@ -30,6 +30,7 @@ public:
 		kAffineTransform,
     kConvnetComponentCudnn,
     kCudnnMaxPooling2DComponent,
+    kBatchNormCudnn,
 		kActiveFunction = 0x0200,
 		kSigmoid,
 		kTanh,
@@ -80,6 +81,7 @@ public:
       opts_.l2_penalty = opt.l2_penalty ;
       opts_.l1_penalty = opt.l1_penalty ;
       opts_.minibatch_size = opt.minibatch_size ;
+      opts_.is_train = opt.is_train ;
   }
 
 	void Write(std::ofstream &os);

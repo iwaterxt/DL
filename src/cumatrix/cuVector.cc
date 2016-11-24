@@ -36,9 +36,13 @@ namespace nnet{
 	void cuVector<Real>::Resize(int32 dim){
 
 		dim_ = dim ;
-		cudaFree(data_);
+		if(data_!=NULL)
+			cudaFree(data_);
+
 		cudaMalloc((void**)&data_, sizeof(Real)*dim);
+
 		this->Set(0.0);
+
 	}
 
 	template <typename Real>

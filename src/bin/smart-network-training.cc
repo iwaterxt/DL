@@ -66,7 +66,7 @@ int main(int argc,  char* argv[])
     using namespace nnet ;
 //========2015-9-19=============
     int32 minibatch_size = 0 , cv_number = 0 , tr_number = 0 , image_size = 0 , class_number = 0 ;
-    bool apply_norm = 0 , cross_validate = 0 ;
+    bool apply_norm = 0 , cross_validate = 0, is_train=1 ;
     BaseFloat learn_rate = 0.0 , bias_learnrate = 0.0 , momentum = 0.0 , l1_penalty = 0.0 , l2_penalty = 0.0 ;
     std::string TrainFile , CrossValFile , tr_lable , cv_lable , mlp_best , mlp_next;
     OptionParse Parser;
@@ -76,6 +76,7 @@ int main(int argc,  char* argv[])
     Parser.Register_int(argc, argv, "image-size", image_size, "the size of image");
     Parser.Register_int(argc, argv, "class-number", class_number, "the number of class");
     Parser.Register_bool(argc, argv, "apply-norm", apply_norm, "apply normalization");
+    Parser.Register_bool(argc, argv, "is-train", is_train, "is training stage");
     Parser.Register_bool(argc, argv, "cross-validate", cross_validate, "apply cross_validate");
     Parser.Register_float(argc, argv, "learn-rate", learn_rate, "learn_rate value of training");
     Parser.Register_float(argc, argv, "bias-learnrate", bias_learnrate, "bias_learnrate value of training");
@@ -106,6 +107,7 @@ int main(int argc,  char* argv[])
     opt.cv_number = cv_number ;
     opt.class_number = class_number ;
     opt.apply_norm = apply_norm ;
+    opt.is_train = is_train ;
     net.SetTrnOption(opt) ;
     if(cross_validate){
           float* dev_set     = new float[cv_number*image_size];

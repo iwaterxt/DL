@@ -26,7 +26,7 @@ class AffineTransform : public UpdateComponent{
 public:
 	AffineTransform(int32 dim_in, int32 dim_out):UpdateComponent(dim_in, dim_out),
       linearity_(dim_out, dim_in), bias_(dim_out),
-	linearity_update_(dim_out, dim_in), bias_update_(dim_out)
+	linearity_update_(dim_out, dim_in), bias_update_(dim_out),delta_(dim_out, dim_in),mmt_(0.0)
 	{
       }
 	~AffineTransform(){};
@@ -102,10 +102,11 @@ public:
             input_diff->AddMatMat(output_diff, kNoTrans, linearity_, kNoTrans, 1.0, 0);
 	}
 
-
+//SGD
+  /*
 	void Update( cuMatrix<BaseFloat> &input,  cuMatrix<BaseFloat> &output_diff){
 
-            BaseFloat momentum = opts_.momentum ;
+            //BaseFloat momentum = opts_.momentum ;
 
             BaseFloat learn_rate = opts_.learn_rate ;
 
@@ -119,7 +120,7 @@ public:
 
 		        BaseFloat learn_scale = 1.0 / input.NumRows();
 
-            linearity_update_.AddMatMat(output_diff, kTrans, input, kNoTrans,  -learn_scale * learn_rate, momentum);
+            linearity_update_.AddMatMat(output_diff, kTrans, input, kNoTrans,  -learn_scale * learn_rate, mmt_);
 
 		        bias_update_.SumColMat(output_diff);
 
@@ -135,9 +136,44 @@ public:
 		        linearity_.AddMat( linearity_update_, kNoTrans, 1.0);
 
 		        bias_.AddVec(bias_update_, 1.0);
+            mmt_ = opts_.momentum ;
 
 
 	}
+  */
+//Nesterov SGD
+  void Update( cuMatrix<BaseFloat> &input,  cuMatrix<BaseFloat> &output_diff){
+
+            //BaseFloat momentum = opts_.momentum ;
+
+            BaseFloat learn_rate = opts_.learn_rate ;
+
+            BaseFloat l2_penalty = opts_.l2_penalty ;
+
+            BaseFloat bias_learn_rate = opts_.bias_learn_rate ;
+
+            assert(linearity_.NumRows() == linearity_update_.NumRows()&&linearity_.NumCols() == linearity_update_.NumCols());
+    
+            assert(bias_.Dim() == bias_update_.Dim());
+
+
+
+            linearity_update_.AddMatMat(output_diff, kTrans, input, kNoTrans,  -learn_rate, 0.0);
+
+
+            linearity_.AddMat(linearity_update_, kNoTrans, 1+mmt_);
+            linearity_.AddMat(delta_, kNoTrans, mmt_*mmt_);
+            delta_.Scale(mmt_);
+            delta_.AddMat(linearity_update_, -learn_rate);
+            bias_update_.SumColMat(output_diff);
+                // l2 regularization
+            if (l2_penalty != 0.0) {
+              linearity_.AddMat(linearity_, kNoTrans, -learn_rate*l2_penalty*input.NumRows());
+            }
+            bias_.AddVec(bias_update_, 1.0);
+            mmt_ = opts_.momentum ;
+  }
+
 
 private:
 	/*data*/
@@ -146,6 +182,8 @@ private:
 
 	cuMatrix<BaseFloat> linearity_update_ ;
 	cuVector<BaseFloat> bias_update_ ;
+  cuMatrix<BaseFloat> delta_ ;
+  BaseFloat mmt_ ;
 };
 }//namespace nnet
 

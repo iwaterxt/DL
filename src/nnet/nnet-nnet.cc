@@ -184,6 +184,7 @@ namespace nnet{
       TrnOptions_.test_number = opt.test_number ;
       TrnOptions_.class_number = opt.class_number ;
       TrnOptions_.minibatch_size = opt.minibatch_size ;
+      TrnOptions_.is_train = opt.is_train ;
 
       for(int32 j = Components_.size()-1 ; j >= 0; j--){
         /*

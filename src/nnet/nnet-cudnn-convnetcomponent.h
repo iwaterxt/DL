@@ -41,7 +41,7 @@ class ConvnetComponentCudnn : public UpdateComponent{
 
 public:
 	ConvnetComponentCudnn(int32 dim_in, int32 dim_out):UpdateComponent(dim_in, dim_out),Init_(false),forward_workspace_ptr_(NULL),
-  backward_workspace_ptr_(NULL)
+  backward_workspace_ptr_(NULL),mmt_(0.0)
 	{}
 
 	~ConvnetComponentCudnn(){
@@ -114,11 +114,12 @@ public:
     }
     Bias_.Resize(param_.num_output_filter);
     Bias_ = vec;
+
 	}
 
   void Init(){
         //convert MB to Words
-        //size_t workspace_byte = 8*1024*1024;
+        size_t workspace_byte = 8*1024*1024;
         size_t back_size = 0 ;
         size_t back_size_w = 0 ;
         cudaStreamCreate(&stream_);
@@ -184,8 +185,8 @@ public:
                  filter_desc_,
                  conv_desc_,
                  out_desc_,
-                 CUDNN_CONVOLUTION_FWD_PREFER_FASTEST,
-                 0,
+                 CUDNN_CONVOLUTION_FWD_SPECIFY_WORKSPACE_LIMIT,
+                 workspace_byte,
                  &algo_), CUDNN_STATUS_SUCCESS, __FILE__, __LINE__);
 
         CHECK_EQ(cudnnGetConvolutionBackwardFilterAlgorithm(handle_,
@@ -193,8 +194,8 @@ public:
                  out_desc_,
                  conv_desc_,
                  filter_desc_,
-                 CUDNN_CONVOLUTION_BWD_FILTER_PREFER_FASTEST,
-                 0,
+                 CUDNN_CONVOLUTION_BWD_FILTER_SPECIFY_WORKSPACE_LIMIT,
+                 workspace_byte,
                  &back_algo_w_), CUDNN_STATUS_SUCCESS, __FILE__, __LINE__);
 
         CHECK_EQ(cudnnGetConvolutionBackwardDataAlgorithm(handle_,
@@ -202,8 +203,8 @@ public:
                  out_desc_,
                  conv_desc_,
                  in_desc_,
-                 CUDNN_CONVOLUTION_BWD_DATA_PREFER_FASTEST,
-                 0,
+                 CUDNN_CONVOLUTION_BWD_DATA_SPECIFY_WORKSPACE_LIMIT,
+                 workspace_byte,
                  &back_algo_), CUDNN_STATUS_SUCCESS, __FILE__, __LINE__);
 
 
@@ -364,7 +365,7 @@ public:
     
       		BaseFloat alpha = 1.0f;
       		BaseFloat beta = 0.0f;
-          BaseFloat mmt = opts_.momentum ;
+          //BaseFloat mmt = opts_.momentum ;
       		BaseFloat* grad_ptr = output_diff.Data() ;
       		BaseFloat* gdata_ptr = input_diff->Data() ;
       		BaseFloat* gbias_ptr = Bias_updata_.Data() ;
@@ -373,15 +374,14 @@ public:
       		BaseFloat* wmat_ptr = Filter_.Data();
  			
 
-
       		CHECK_EQ(cudnnConvolutionBackwardBias(handle_,
                                             		&alpha,
                                             		out_desc_,
                                             		grad_ptr  ,
-                                            		&mmt ,
+                                            		&mmt_ ,
                                             		bias_desc_,
-                                            		gbias_ptr  ),
-                 									CUDNN_STATUS_SUCCESS, __FILE__, __LINE__);
+                                            		gbias_ptr ),
+                 									              CUDNN_STATUS_SUCCESS, __FILE__, __LINE__);
 
       		CUDNN_CALL(cudnnConvolutionBackwardFilter(handle_,
                											&alpha,
@@ -393,7 +393,7 @@ public:
                											back_algo_w_,
                											backward_workspace_ptr_,
                											backward_workspace_byte_,
-               											&mmt ,
+               											&mmt_ ,
                											filter_desc_,
                											gwmat_ptr  ));
       		CHECK_EQ(cudnnConvolutionBackwardData(handle_,
@@ -409,6 +409,7 @@ public:
                										&beta,
                										in_desc_,
                										gdata_ptr  ), CUDNN_STATUS_SUCCESS, __FILE__, __LINE__);
+          mmt_ = opts_.momentum ;
 
 	}	
 
@@ -449,6 +450,7 @@ private:
   	size_t bias_offset_;
   	BaseFloat* forward_workspace_ptr_ ;
     BaseFloat* backward_workspace_ptr_ ;
+    BaseFloat mmt_ ;
   	BaseFloat learn_rate_coef_;
   	BaseFloat bias_learn_rate_coef_;
   	cudnnTensorDescriptor_t in_desc_;

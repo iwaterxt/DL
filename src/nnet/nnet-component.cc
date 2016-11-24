@@ -19,6 +19,7 @@
 # include "nnet-cudnn-convnetcomponent.h"
 # include "nnet-cudnn-2d-pooling.h"
 # include "nnet-cudnn-active.h"
+# include "nnet-batch-norm.h"
 
 
 
@@ -29,6 +30,7 @@ const struct Component::key_value Component::kMarkerMap[] = {
   { Component::kAffineTransform,"<AffineTransform>" },
   { Component::kConvnetComponentCudnn, "<ConvnetComponentCudnn>"},
   { Component::kCudnnMaxPooling2DComponent, "<CudnnMaxPooling2DComponent>"},
+  { Component::kBatchNormCudnn, "<BatchNormCudnn>"},
   { Component::kSoftMax,"<Softmax>" },
   { Component::kCudnnSoftMax, "<CudnnSoftMax>"},
   { Component::kSigmoid,"<Sigmoid>" },
@@ -98,6 +100,9 @@ Component* Component::NewComponentOfType(ComponentType comp_type,
       break;
     case Component::kCudnnMaxPooling2DComponent :
       ans = new CudnnMaxPooling2DComponent(input_dim, output_dim);
+      break;
+    case Component::kBatchNormCudnn:
+      ans = new BatchNormCudnn(input_dim, output_dim);
       break;
     case Component::kUnknown :
     default :

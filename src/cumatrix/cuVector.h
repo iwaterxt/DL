@@ -31,7 +31,10 @@ class cuVector{
 
 public:
 
-	cuVector(){}
+	cuVector(){
+		data_=NULL;
+		dim_=0;
+	}
 
 	cuVector(int32 dim);
 
